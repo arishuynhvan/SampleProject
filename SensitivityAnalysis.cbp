@@ -113,6 +113,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/SAMethod.hpp" />
 		<Unit filename="include/SampleFunction.hpp" />
 		<Unit filename="include/SensitivityAnalysis.hpp">
 			<Option target="Debug" />
