@@ -63,6 +63,18 @@ class FiniteDifference : public GenericSensitivityAnalysis
                             const std::vector<std::vector<double>> &x,
                             Unfit::GenericModel& model,
                             const double delta=0.01);
+    std::vector<double> getSCMax();
+    std::vector<double> getSCMin();
+    /**
+     * getSCMatrix()[i] includes all sensitivity coefficients
+     * calculated over the range of independent variables x
+     * when parameter c[i] is perturbed
+     */
+    std::vector<std::vector<double>> getSCMatrix(){
+        return scMatrix;
+    };
+
+
 private:
     std::vector<std::vector<double>> scMatrix;
     std::vector<double> scMax;

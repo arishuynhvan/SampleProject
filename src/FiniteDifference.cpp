@@ -82,19 +82,10 @@ FiniteDifference::~FiniteDifference() = default;
             param = tmp; //undo any perturbations for a parameter before changing the next
         }
     }
-    std::vector<double> getSCMax{
+    std::vector<double> FiniteDifference::getSCMax(){
         return scMax;
     }
-    std::vector<double> getSCMin{
+    std::vector<double> FiniteDifference::getSCMin(){
         return scMin;
     }
-    /**
-     * getSCMatrix()[i] includes all sensitivity coefficients
-     * calculated over the range of independent variables x
-     * when parameter c[i] is perturbed
-     */
-    std::vector<vector<double>> getSCMatrix(){
-        return scMatrix;
-    }
-
 }
