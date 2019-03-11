@@ -51,12 +51,11 @@ class GenericSensitivityAnalysis
    * the sensitivity coefficients for all the , i.e., y = f(x0, x1, ... , xN).
    *
    * \param c A vector of model parameters/constants
-   * \param x A vector of vectors containing the independent variable values
+   * \param x A vector of vectors containing the values of independent variables,
    *          at which the model should be evaluated.
-   * \param model A functor of a model that implements Unfit::GenericModel
-   * \return  A vector containing the sensitivity coefficients of parameters c
+   * \param model A functor of a model
    */
-  virtual std::vector<double> operator()(const std::vector<double> &c,
+  virtual void operator()(const std::vector<double> &c,
       const std::vector<std::vector<double>> &x, Unfit::GenericModel& model) = 0;
 };
 

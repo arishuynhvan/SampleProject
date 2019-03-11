@@ -37,3 +37,6 @@
 bin
 obj
 lib
+
+# Others
+workspace.md
