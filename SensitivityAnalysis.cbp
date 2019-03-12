@@ -26,18 +26,22 @@
 					<Add option="-Weffc++" />
 					<Add option="-Wmain" />
 					<Add option="-pedantic" />
-					<Add option="-std=c++11" />
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
+					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="--coverage" />
 					<Add directory="include" />
 					<Add directory="examples" />
+					<Add directory="../Unfit" />
+					<Add directory="../Unfit/src" />
+					<Add directory="../Unfit/include" />
 				</Compiler>
 				<Linker>
 					<Add option="--coverage" />
 					<Add option="-Wl,--no-as-needed" />
 					<Add library="pthread" />
+					<Add directory="../Unfit/obj/Debug" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -119,6 +123,7 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="src/FiniteDifference.cpp" />
 		<Unit filename="src/SampleFunction.cpp" />
 		<Unit filename="src/main.cpp">
 			<Option target="Debug" />

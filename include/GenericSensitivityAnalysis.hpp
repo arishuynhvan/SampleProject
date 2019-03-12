@@ -55,8 +55,8 @@ class GenericSensitivityAnalysis
    *          at which the model should be evaluated.
    * \param model A functor of a model
    */
-  virtual void operator()(const std::vector<double> &c,
-      const std::vector<std::vector<double>> &x, Unfit::GenericModel& model) = 0;
+  virtual void calculateSensitivity(const std::vector<double> &c,
+      const std::vector<std::vector<double>> &x, Unfit::GenericModel& model)=0;
 };
 
 }  // namespace SensitivityAnalysis

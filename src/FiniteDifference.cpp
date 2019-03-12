@@ -27,6 +27,7 @@ FiniteDifference::FiniteDifference()
   : scMatrix {}
   , scMax {}
   , scMin {}
+  , delta {0.01}
 {}
 
 FiniteDifference::~FiniteDifference() = default;
@@ -50,14 +51,17 @@ FiniteDifference::~FiniteDifference() = default;
      * \param   model A functor of a model
      * \param   delta A relative perturbation for all parameters, 1% of each nominal value by default
      */
-    void operator()(const std::vector<double> &c,
+    void FiniteDifference::calculateSensitivity(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
-                    const Unfit::GenericModel& model,
-                    double delta=0.01)
+                    Unfit::GenericModel& model,
+                    const double& d)
     {
         std::vector<double> scTmp;
         std::vector<double> yHi;
         std::vector<double> yLow;
+        if(d){
+            delta=d;
+        }
         auto cTmp=c;
         for (auto &param:cTmp){
             auto tmp = param;
@@ -65,10 +69,11 @@ FiniteDifference::~FiniteDifference() = default;
             yHi = model(cTmp,x);
             param = tmp * (1-delta);
             yLow = model(cTmp,x);
-            double scTmpMax = (yHi[i]-yLow[i])/(2*delta*param);
+            double doubleEps = 2*delta*param;
+            double scTmpMax = (yHi[0]-yLow[0])/(doubleEps);
             double scTmpMin = scTmpMax;
             for(int i = 0; i<yHi.size(); i++){
-                scTmp.push_back((yHi[i]-yLow[i])/(2*delta*param));
+                scTmp.push_back((yHi[i]-yLow[i])/(doubleEps));
                 if (scTmp[i] < scTmpMin){
                     scTmpMin = scTmp[i];
                 }
