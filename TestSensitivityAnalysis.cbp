@@ -35,6 +35,10 @@
 					<Add directory="include" />
 					<Add directory="examples" />
 					<Add directory="unittests" />
+					<Add directory="../Unfit/include" />
+					<Add directory="../Unfit/src" />
+					<Add directory="../Unfit/examples" />
+					<Add directory="src" />
 				</Compiler>
 				<Linker>
 					<Add option="--coverage" />
@@ -121,12 +125,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="examples/TestExamplesSampleFunction.cpp">
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
 		<Unit filename="include/SampleFunction.hpp" />
-		<Unit filename="src/SampleFunction.cpp" />
 		<Unit filename="src/main-test.cpp">
 			<Option target="Debug" />
 			<Option target="Release" />

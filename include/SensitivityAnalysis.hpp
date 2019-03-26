@@ -29,5 +29,6 @@
  */
 
 #include "FiniteDifference.hpp"
+#include "SDNormalizedLocalSA.hpp"
 
 #endif

@@ -56,7 +56,7 @@ FiniteDifference::~FiniteDifference() = default;
     void FiniteDifference::calculateSensitivity(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
                     Unfit::GenericModel& model,
-                    double& d)
+                    const double& d)
     {
         std::vector<double> scTmp;
         std::vector<double> yHi;
