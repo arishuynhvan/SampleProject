@@ -16,6 +16,7 @@
 // GNU General Public License for more details.
 
 #include <vector>
+#include <math.h>
 #include "GenericModel.hpp"
 #include "GenericSensitivityAnalysis.hpp"
 #include "FiniteDifference.hpp"
@@ -27,6 +28,7 @@ FiniteDifference::FiniteDifference()
   : scMatrix {}
   , scMax {}
   , scMin {}
+  , scMean{}
   , delta {0.01}
 {}
 
@@ -54,12 +56,12 @@ FiniteDifference::~FiniteDifference() = default;
     void FiniteDifference::calculateSensitivity(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
                     Unfit::GenericModel& model,
-                    const double& d)
+                    double& d)
     {
         std::vector<double> scTmp;
         std::vector<double> yHi;
         std::vector<double> yLow;
-        if(d){
+        if(!d){
             delta=d;
         }
         auto cTmp=c;
@@ -72,6 +74,7 @@ FiniteDifference::~FiniteDifference() = default;
             double doubleEps = 2*delta*param;
             double scTmpMax = (yHi[0]-yLow[0])/(doubleEps);
             double scTmpMin = scTmpMax;
+            double scSumAbs = 0;
             for(int i = 0; i<yHi.size(); i++){
                 scTmp.push_back((yHi[i]-yLow[i])/(doubleEps));
                 if (scTmp[i] < scTmpMin){
@@ -80,11 +83,14 @@ FiniteDifference::~FiniteDifference() = default;
                 if (scTmp[i] > scTmpMax){
                     scTmpMax = scTmp[i];
                 }
+                scSumAbs += fabs(scTmp[i]);
             }
             scMin.push_back(scTmpMin);
-            scMin.push_back(scTmpMax);
+            scMax.push_back(scTmpMax);
             scMatrix.push_back(scTmp);
-            param = tmp; //undo any perturbations for a parameter before changing the next
+            scMean.push_back(scSumAbs/yHi.size());
+            //undo any perturbations for the current parameter before changing the next
+            param = tmp;
         }
     }
     std::vector<double> FiniteDifference::getSCMax(){
@@ -92,5 +98,17 @@ FiniteDifference::~FiniteDifference() = default;
     }
     std::vector<double> FiniteDifference::getSCMin(){
         return scMin;
+    }
+    std::vector<double> FiniteDifference::getSCMean(){
+        return scMean;
+    }
+
+    /**
+     * getSCMatrix()[i] includes all sensitivity coefficients
+     * calculated over the range of independent variables x
+     * when parameter c[i] is perturbed
+     */
+    std::vector<std::vector<double>> FiniteDifference::getSCMatrix(){
+        return scMatrix;
     }
 }

@@ -27,11 +27,12 @@
 
 namespace SensitivityAnalysis
 {
-class FiniteDifference : public GenericSensitivityAnalysis
+class FiniteDifference
 {
  /**
    * The constructor sets all of the parameters to their default values.
    */
+  public:
   FiniteDifference();
 
   /**
@@ -62,24 +63,19 @@ class FiniteDifference : public GenericSensitivityAnalysis
       void calculateSensitivity(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
                     Unfit::GenericModel& model,
-                    const double& d);
+                    double& d);
 
     std::vector<double> getSCMax();
     std::vector<double> getSCMin();
-    /**
-     * getSCMatrix()[i] includes all sensitivity coefficients
-     * calculated over the range of independent variables x
-     * when parameter c[i] is perturbed
-     */
-    std::vector<std::vector<double>> getSCMatrix(){
-        return scMatrix;
-    };
+    std::vector<double> getSCMean();
+    std::vector<std::vector<double>> getSCMatrix();
 
 
 private:
     std::vector<std::vector<double>> scMatrix;
     std::vector<double> scMax;
     std::vector<double> scMin;
+    std::vector<double> scMean;
     double delta;
 
 };

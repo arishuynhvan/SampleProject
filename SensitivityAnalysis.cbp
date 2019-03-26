@@ -36,6 +36,7 @@
 					<Add directory="../Unfit" />
 					<Add directory="../Unfit/src" />
 					<Add directory="../Unfit/include" />
+					<Add directory="../Unfit/examples" />
 				</Compiler>
 				<Linker>
 					<Add option="--coverage" />
@@ -119,11 +120,13 @@
 		</Compiler>
 		<Unit filename="include/FiniteDifference.hpp" />
 		<Unit filename="include/GenericSensitivityAnalysis.hpp" />
+		<Unit filename="include/SDNormalizedFD.hpp" />
 		<Unit filename="include/SensitivityAnalysis.hpp">
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/FiniteDifference.cpp" />
+		<Unit filename="src/SDNormalizedFD.cpp" />
 		<Unit filename="src/SampleFunction.cpp" />
 		<Unit filename="src/main.cpp">
 			<Option target="Debug" />
