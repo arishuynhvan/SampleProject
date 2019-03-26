@@ -25,7 +25,7 @@ int main()
     <<params[0] <<"x+" <<params[1] << "\n"
     <<"Params\tMinSC\t\tMaxSC\t\tMeanSC\n";
 
-    for(int i =0; i<params.size();i++){
+    for(int i =0u; i<params.size();i++){
         std::cout << params[i]<<"\t"<<minSC[i]<<"\t"<<maxSC[i] << "\t\t"<<meanSC[i]<<"\n";
     }
     return 0;

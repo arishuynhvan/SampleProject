@@ -75,7 +75,7 @@ FiniteDifference::~FiniteDifference() = default;
             double scTmpMax = (yHi[0]-yLow[0])/(doubleEps);
             double scTmpMin = scTmpMax;
             double scSumAbs = 0;
-            for(int i = 0; i<yHi.size(); i++){
+            for(int i = 0u; i<yHi.size(); i++){
                 scTmp.push_back((yHi[i]-yLow[i])/(doubleEps));
                 if (scTmp[i] < scTmpMin){
                     scTmpMin = scTmp[i];

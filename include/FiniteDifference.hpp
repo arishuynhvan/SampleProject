@@ -32,7 +32,7 @@ class FiniteDifference
  /**
    * The constructor sets all of the parameters to their default values.
    */
-  public:
+ public:
   FiniteDifference();
 
   /**

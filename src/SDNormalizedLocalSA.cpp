@@ -57,35 +57,38 @@ namespace SensitivityAnalysis
      */
 
     void SDNormalizedLocalSA::calculateSensitivity(const std::vector<double> &params,
-                    const std::vector<std::vector<double>> &x,
-                    Unfit::GenericModel& model,
-                    const std::vector<double> &paramSD,
-                    const double& ySD,
-                    const double& d)
+        const std::vector<std::vector<double>> &x,
+        Unfit::GenericModel& model,
+        const std::vector<double> &paramSD,
+        const double& ySD,
+        const double& d)
     {
-        for (auto& param: params){
-            FiniteDifference fd;
-            fd.calculateSensitivity(param, x, model, d);
-            meanSC = fd.getSCMean();
-            minSC = fd.getSCMin();
-            maxSC = fd.getSCMax();
-            for(int i=0; i<params.size();i++){
-                auto sdNormalized = paramSD[i]/ySD;
-                scMax.push_back(sdNormalized*maxSC[i]);
-                scMin.push_back(sdNormalized*minSC[i]);
-                scMean.push_back(sdNormalized*meanSC[i])
-            }
+      FiniteDifference fd;
+      fd.calculateSensitivity(params, x, model, d);
+      auto meanSC = fd.getSCMean();
+      auto minSC = fd.getSCMin();
+      auto maxSC = fd.getSCMax();
+      for (auto& param: params){
+        for(int i=0u; i<params.size();i++){
+          auto sdNormalized = paramSD[i]/ySD;
+          scMax.push_back(sdNormalized*maxSC[i]);
+          scMin.push_back(sdNormalized*minSC[i]);
+          scMean.push_back(sdNormalized*meanSC[i]);
         }
+      }
 
     }
-    std::vector<double> SDNormalizedLocalSA::getSCMax(){
-        return scMax;
+
+    std::vector<double> SDNormalizedLocalSA::getSCMax() {
+      return scMax;
     }
-    std::vector<double> SDNormalizedLocalSA::getSCMin(){
-        return scMin;
+
+    std::vector<double> SDNormalizedLocalSA::getSCMin() {
+      return scMin;
     }
-    std::vector<double> SDNormalizedLocalSA::getSCMean(){
-        return scMean;
+
+    std::vector<double> SDNormalizedLocalSA::getSCMean() {
+      return scMean;
     }
 
     /**

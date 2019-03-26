@@ -125,15 +125,16 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="include/SampleFunction.hpp" />
+		<Unit filename="include/FiniteDifference.hpp" />
+		<Unit filename="include/SDNormalizedLocalSA.hpp" />
+		<Unit filename="include/SensitivityAnalysis.hpp" />
+		<Unit filename="src/FiniteDifference.cpp" />
+		<Unit filename="src/SDNormalizedLocalSA.cpp" />
 		<Unit filename="src/main-test.cpp">
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
-		<Unit filename="unittests/TestSampleFunction.cpp">
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
+		<Unit filename="unittests/TestSampleFunction.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
