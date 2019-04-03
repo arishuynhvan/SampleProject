@@ -18,6 +18,7 @@
 #include <vector>
 #include <math.h>
 #include <stdexcept>
+#include <cmath>
 #include "GenericModel.hpp"
 #include "GenericSensitivityAnalysis.hpp"
 #include "FiniteDifference.hpp"
@@ -30,7 +31,7 @@ FiniteDifference::FiniteDifference()
   , scMax {}
   , scMin {}
   , scMean{}
-  , delta {0.01}
+  , doubleEps{}
 {}
 
 FiniteDifference::~FiniteDifference() = default;
@@ -52,41 +53,46 @@ FiniteDifference::~FiniteDifference() = default;
      * \param   x A vector of independent variables. Each vector x[i] contains
      *          all possible values x[i][j] in the range of an independent variable
      * \param   model A functor of a model
-     * \param   delta A relative perturbation for all parameters, 1% of each nominal value by default
+     * \param   d A relative perturbation for all parameters, 1% of each nominal value by default
+     * \return  0 -> success; 1 -> d is 0; 2 -> x contains infinity; 3 -> output from the model is infinity
      */
-    void FiniteDifference::calculateSensitivity(const std::vector<double> &c,
+    int FiniteDifference::calculateSensitivity(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
                     Unfit::GenericModel& model,
                     const double d)
     {
+      //TODO: Check if d is not 0, inf, nan + unit test
+        if(std::isnormal(d))
+        {
+
+        }
+        //Check if d is 0
+        else if(fabs(d-1e-307)<=1e-307)
+        {
+          return 1;
+        }
+        //TODO Check if params doesn't contain 0 & set it to 1 otherwise + unit test
+        //TODO Check if x doesn't contain infinity
         std::vector<double> scTmp;
         double derivative;
         std::vector<double> yHi;
         std::vector<double> yLow;
-        if(!d){
-            delta=d;
-        }
         auto cTmp=c;
         for (auto &param:cTmp)
         {
           auto tmp = param;
-          param = tmp *(1+delta);
+          param = tmp *(1+d);
+          //TODO return 2 when yHi or yLow is +/-infinity
           yHi = model(cTmp,x);
-          param = tmp * (1-delta);
+          param = tmp * (1-d);
           yLow = model(cTmp,x);
-          auto doubleEps = 2*delta*param;
+          doubleEps = 2*d*param;
           double scSumAbs = 0;
-          double scTmpMin = 1e15;
-          double scTmpMax = 1e-15;
+          double scTmpMin = 1e307;
+          double scTmpMax = -1e307;
           for(int i = 0u; i<yHi.size(); i++)
           {
-            if(doubleEps<1e-32)
-            {
-              throw std::runtime_error("Math error: Attempted to divide by Zero\n");
-            }
-            else{
-              derivative = (yHi[i]-yLow[i])/doubleEps;
-            }
+            derivative = (yHi[i]-yLow[i])/doubleEps;
             scTmp.push_back(derivative);
             if (derivative < scTmpMin)
             {
@@ -106,6 +112,7 @@ FiniteDifference::~FiniteDifference() = default;
             param = tmp;
             scTmp.clear();
         }
+        return 0;
     }
     std::vector<double> FiniteDifference::getSCMax(){
         return scMax;
@@ -124,5 +131,9 @@ FiniteDifference::~FiniteDifference() = default;
      */
     std::vector<std::vector<double>> FiniteDifference::getSCMatrix(){
         return scMatrix;
+    }
+    //TODO doubleEps -> class variable; getDoubleEps for unittest
+    double FiniteDifference::getDoubleEps(){
+      return doubleEps;
     }
 }

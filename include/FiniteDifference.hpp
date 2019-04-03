@@ -60,7 +60,7 @@ class FiniteDifference
      * \param   model A functor of a model
      * \param   delta A relative perturbation for all parameters, 1% of each nominal value by default
      */
-      void calculateSensitivity(const std::vector<double> &c,
+    int calculateSensitivity(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
                     Unfit::GenericModel& model,
                     const double d=0.01);
@@ -69,14 +69,13 @@ class FiniteDifference
     std::vector<double> getSCMin();
     std::vector<double> getSCMean();
     std::vector<std::vector<double>> getSCMatrix();
-
-
+    double getDoubleEps();
 private:
     std::vector<std::vector<double>> scMatrix;
     std::vector<double> scMax;
     std::vector<double> scMin;
     std::vector<double> scMean;
-    double delta;
+    double doubleEps;
 
 };
 }// namespace SensitivityAnalysis

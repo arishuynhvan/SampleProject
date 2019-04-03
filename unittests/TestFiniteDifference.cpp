@@ -11,6 +11,9 @@ namespace UnitTests
 {
 SUITE(UnitTestFiniteDifference)
 {
+  //TODO unittest for all the return cases
+  //TODO test for the exact values of minSC maxSC meanSC matrixSC for linear model when x{{1,2}}
+  //TODO test all getters
 TEST(LinearModel_AllArgumentsValid)
 {
   std::vector<std::vector<double>> x {{0.498531, 0.622145, 0.746551, 0.899687,
