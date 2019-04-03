@@ -31,7 +31,7 @@ TEST(FiniteDifference_LinearModel_AllArgumentsValid)
 }
 TEST(FiniteDifference_ZeroDifference)
 {
-    std::vector<std::vector<double>> x {{0.498531, 0.622145, 0.746551, 0.899687,
+  std::vector<std::vector<double>> x {{0.498531, 0.622145, 0.746551, 0.899687,
   0.995019, 1.24803, 1.49695, 1.7464, 1.86737, 1.92478, 2.07206, 2.12789,
   2.23212}};
   std::vector<double> params {{12.0, 1.0}};
