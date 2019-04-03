@@ -17,6 +17,7 @@
 
 #include <vector>
 #include <math.h>
+#include <stdexcept>
 #include "GenericModel.hpp"
 #include "GenericSensitivityAnalysis.hpp"
 #include "FiniteDifference.hpp"
@@ -56,34 +57,46 @@ FiniteDifference::~FiniteDifference() = default;
     void FiniteDifference::calculateSensitivity(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
                     Unfit::GenericModel& model,
-                    const double& d)
+                    const double d)
     {
         std::vector<double> scTmp;
+        double derivative;
         std::vector<double> yHi;
         std::vector<double> yLow;
         if(!d){
             delta=d;
         }
         auto cTmp=c;
-        for (auto &param:cTmp){
-            auto tmp = param;
-            param = tmp *(1+delta);
-            yHi = model(cTmp,x);
-            param = tmp * (1-delta);
-            yLow = model(cTmp,x);
-            double doubleEps = 2*delta*param;
-            double scTmpMax = (yHi[0]-yLow[0])/(doubleEps);
-            double scTmpMin = scTmpMax;
-            double scSumAbs = 0;
-            for(int i = 0u; i<yHi.size(); i++){
-                scTmp.push_back((yHi[i]-yLow[i])/(doubleEps));
-                if (scTmp[i] < scTmpMin){
-                    scTmpMin = scTmp[i];
-                }
-                if (scTmp[i] > scTmpMax){
-                    scTmpMax = scTmp[i];
-                }
-                scSumAbs += fabs(scTmp[i]);
+        for (auto &param:cTmp)
+        {
+          auto tmp = param;
+          param = tmp *(1+delta);
+          yHi = model(cTmp,x);
+          param = tmp * (1-delta);
+          yLow = model(cTmp,x);
+          auto doubleEps = 2*delta*param;
+          double scSumAbs = 0;
+          double scTmpMin = 1e15;
+          double scTmpMax = 1e-15;
+          for(int i = 0u; i<yHi.size(); i++)
+          {
+            if(doubleEps<1e-32)
+            {
+              throw std::runtime_error("Math error: Attempted to divide by Zero\n");
+            }
+            else{
+              derivative = (yHi[i]-yLow[i])/doubleEps;
+            }
+            scTmp.push_back(derivative);
+            if (derivative < scTmpMin)
+            {
+              scTmpMin = derivative;
+            }
+            if (derivative > scTmpMax)
+            {
+              scTmpMax = derivative;
+            }
+              scSumAbs += fabs(scTmp[i]);
             }
             scMin.push_back(scTmpMin);
             scMax.push_back(scTmpMax);
@@ -91,6 +104,7 @@ FiniteDifference::~FiniteDifference() = default;
             scMean.push_back(scSumAbs/yHi.size());
             //undo any perturbations for the current parameter before changing the next
             param = tmp;
+            scTmp.clear();
         }
     }
     std::vector<double> FiniteDifference::getSCMax(){
