@@ -63,7 +63,7 @@ class FiniteDifference
       void calculateSensitivity(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
                     Unfit::GenericModel& model,
-                    const double& d);
+                    const double d=0.01);
 
     std::vector<double> getSCMax();
     std::vector<double> getSCMin();
