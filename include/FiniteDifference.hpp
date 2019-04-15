@@ -70,13 +70,15 @@ class FiniteDifference
     std::vector<double> getSCMean();
     std::vector<std::vector<double>> getSCMatrix();
     double getDoubleEps();
+    int invalidArguments(const std::vector<double> &c,
+                    const std::vector<std::vector<double>> &x,
+                    const double d);
 private:
     std::vector<std::vector<double>> scMatrix;
     std::vector<double> scMax;
     std::vector<double> scMin;
     std::vector<double> scMean;
     double doubleEps;
-
 };
 }// namespace SensitivityAnalysis
 

@@ -16,9 +16,9 @@
 // GNU General Public License for more details.
 
 #include <vector>
-#include <math.h>
 #include <stdexcept>
 #include <cmath>
+#include <cfloat>
 #include "GenericModel.hpp"
 #include "GenericSensitivityAnalysis.hpp"
 #include "FiniteDifference.hpp"
@@ -53,66 +53,59 @@ FiniteDifference::~FiniteDifference() = default;
      * \param   x A vector of independent variables. Each vector x[i] contains
      *          all possible values x[i][j] in the range of an independent variable
      * \param   model A functor of a model
-     * \param   d A relative perturbation for all parameters, 1% of each nominal value by default
-     * \return  0 -> success; 1 -> d is 0; 2 -> x contains infinity; 3 -> output from the model is infinity
+     * \param   d A relative perturbation for all parameters, 0.01 of the nominal value by default
+     * \return  0 -> success; 1 -> one or more arguments are invalid;
+     *          2 -> output from the model contains infinity or nan
      */
     int FiniteDifference::calculateSensitivity(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
                     Unfit::GenericModel& model,
                     const double d)
     {
-      //TODO: Check if d is not 0, inf, nan + unit test
-        if(std::isnormal(d))
-        {
+      if(FiniteDifference::invalidArguments(c,x,d)){return 1;}
 
-        }
-        //Check if d is 0
-        else if(fabs(d-1e-307)<=1e-307)
+      std::vector<double> scTmp;
+      double derivative;
+      std::vector<double> yHi;
+      std::vector<double> yLow;
+      auto cTmp=c;
+
+      for (auto &param:cTmp)
+      {
+        auto tmp = param;
+        param = tmp *(1+d);
+        yHi = model(cTmp,x);
+        param = tmp * (1-d);
+        yLow = model(cTmp,x);
+        doubleEps = 2*d*param;
+        double scSumAbs = 0;
+        double scTmpMin = DBL_MAX;
+        double scTmpMax = -DBL_MIN;
+        for(int i = 0u; i<yHi.size(); i++)
         {
-          return 1;
-        }
-        //TODO Check if params doesn't contain 0 & set it to 1 otherwise + unit test
-        //TODO Check if x doesn't contain infinity
-        std::vector<double> scTmp;
-        double derivative;
-        std::vector<double> yHi;
-        std::vector<double> yLow;
-        auto cTmp=c;
-        for (auto &param:cTmp)
-        {
-          auto tmp = param;
-          param = tmp *(1+d);
-          //TODO return 2 when yHi or yLow is +/-infinity
-          yHi = model(cTmp,x);
-          param = tmp * (1-d);
-          yLow = model(cTmp,x);
-          doubleEps = 2*d*param;
-          double scSumAbs = 0;
-          double scTmpMin = 1e307;
-          double scTmpMax = -1e307;
-          for(int i = 0u; i<yHi.size(); i++)
+          if(std::isinf(yHi[i]) || std::isnan(yHi[i])
+             ||std::isinf(yLow[i])|| std::isnan(yLow[i])) {return 2;}
+          derivative = (yHi[i]-yLow[i])/doubleEps;
+          scTmp.push_back(derivative);
+          if (derivative < scTmpMin)
           {
-            derivative = (yHi[i]-yLow[i])/doubleEps;
-            scTmp.push_back(derivative);
-            if (derivative < scTmpMin)
-            {
-              scTmpMin = derivative;
-            }
-            if (derivative > scTmpMax)
-            {
-              scTmpMax = derivative;
-            }
-              scSumAbs += fabs(scTmp[i]);
-            }
-            scMin.push_back(scTmpMin);
-            scMax.push_back(scTmpMax);
-            scMatrix.push_back(scTmp);
-            scMean.push_back(scSumAbs/yHi.size());
-            //undo any perturbations for the current parameter before changing the next
-            param = tmp;
-            scTmp.clear();
-        }
-        return 0;
+            scTmpMin = derivative;
+          }
+          if (derivative > scTmpMax)
+          {
+            scTmpMax = derivative;
+          }
+            scSumAbs += fabs(scTmp[i]);
+          }
+          scMin.push_back(scTmpMin);
+          scMax.push_back(scTmpMax);
+          scMatrix.push_back(scTmp);
+          scMean.push_back(scSumAbs/yHi.size());
+          //undo any perturbations for the current parameter before changing the next
+          param = tmp;
+          scTmp.clear();
+      }
+      return 0;
     }
     std::vector<double> FiniteDifference::getSCMax(){
         return scMax;
@@ -135,5 +128,18 @@ FiniteDifference::~FiniteDifference() = default;
     //TODO doubleEps -> class variable; getDoubleEps for unittest
     double FiniteDifference::getDoubleEps(){
       return doubleEps;
+    }
+
+    /**
+      * \return  0 -> success; 1 -> d is nan, infinity or <1e-15; 2 -> params contain nan, or 0 values;
+      *          3 -> x contains infinity or nan
+      */
+    int FiniteDifference::invalidArguments(const std::vector<double> &c,
+                    const std::vector<std::vector<double>> &x,
+                    const double d) {
+      if(!std::isnormal(d) || fabs(d)<1e-15){return 1;}
+      for (auto &param:c){if(!std::isnormal(param)){return 2;}}
+      for (auto &inputs:x){for(auto &input:inputs){if(std::isinf(input)||std::isnan(input)){return 3;}}}
+      return 0;
     }
 }
