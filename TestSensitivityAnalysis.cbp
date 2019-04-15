@@ -113,6 +113,7 @@
 					<Add option="-Wall" />
 					<Add option="-std=c++0x" />
 					<Add directory="include" />
+					<Add directory="examples" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -125,6 +126,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="examples/LogarithmicModel.hpp" />
 		<Unit filename="include/FiniteDifference.hpp" />
 		<Unit filename="include/SDNormalizedLocalSA.hpp" />
 		<Unit filename="include/SensitivityAnalysis.hpp" />
