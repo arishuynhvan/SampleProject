@@ -125,12 +125,12 @@ FiniteDifference::~FiniteDifference() = default;
     std::vector<std::vector<double>> FiniteDifference::getSCMatrix(){
         return scMatrix;
     }
-    //TODO doubleEps -> class variable; getDoubleEps for unittest
     double FiniteDifference::getDoubleEps(){
       return doubleEps;
     }
 
-    /**
+    /** Check if the arguments are valid
+      *
       * \return  0 -> success; 1 -> d is nan, infinity or <1e-15; 2 -> params contain nan, or 0 values;
       *          3 -> x contains infinity or nan
       */
