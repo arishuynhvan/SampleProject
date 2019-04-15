@@ -128,10 +128,8 @@
 		</Compiler>
 		<Unit filename="examples/LogarithmicModel.hpp" />
 		<Unit filename="include/FiniteDifference.hpp" />
-		<Unit filename="include/SDNormalizedLocalSA.hpp" />
 		<Unit filename="include/SensitivityAnalysis.hpp" />
 		<Unit filename="src/FiniteDifference.cpp" />
-		<Unit filename="src/SDNormalizedLocalSA.cpp" />
 		<Unit filename="src/main-test.cpp">
 			<Option target="Debug" />
 			<Option target="Release" />

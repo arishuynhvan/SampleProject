@@ -60,18 +60,17 @@ class SDNormalizedLocalSA
      * \param   model A functor of a model
      * \param   delta A relative perturbation for all parameters, 1% of each nominal value by default
      */
-    void calculateSensitivity(const std::vector<double> &params,
+    int calculateSensitivity(const std::vector<double> &params,
                     const std::vector<std::vector<double>> &x,
                     Unfit::GenericModel& model,
                     const std::vector<double> &paramSD,
                     const double& ySD,
-                    const double& d);
+                    const double d=0.01);
 
     std::vector<double> getSCMax();
     std::vector<double> getSCMin();
     std::vector<double> getSCMean();
     std::vector<std::vector<double>> getSCMatrix();
-
 
 private:
     std::vector<std::vector<double>> scMatrix;

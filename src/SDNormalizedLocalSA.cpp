@@ -16,7 +16,8 @@
 // GNU General Public License for more details.
 
 #include <vector>
-#include <math.h>
+#include <cmath>
+#include <cfloat>
 #include "GenericModel.hpp"
 #include "GenericSensitivityAnalysis.hpp"
 #include "SDNormalizedLocalSA.hpp"
@@ -54,29 +55,33 @@ namespace SensitivityAnalysis
      *          all possible values x[i][j] in the range of an independent variable
      * \param   model A functor of a model
      * \param   delta A relative perturbation for all parameters, 1% of each nominal value by default
+     * \return  0 -> success; 1 -> one or more arguments are invalid;
+     *          2 -> output from the model contains infinity or nan;
+     *          3 -> paramSD contains NAN; 4-> invalid ySD
      */
 
-    void SDNormalizedLocalSA::calculateSensitivity(const std::vector<double> &params,
+    int SDNormalizedLocalSA::calculateSensitivity(const std::vector<double> &params,
         const std::vector<std::vector<double>> &x,
         Unfit::GenericModel& model,
         const std::vector<double> &paramSD,
         const double& ySD,
-        const double& d)
+        const double d)
     {
+      if(!std::isnormal(ySD)){return 4;}
+      for(auto& sd: paramSD){if(std::isnan(sd)){return 3;}}
       FiniteDifference fd;
-      fd.calculateSensitivity(params, x, model, d);
+      auto csRes = fd.calculateSensitivity(params, x, model, d);
+      if(!csRes){return csRes;}
       auto meanSC = fd.getSCMean();
       auto minSC = fd.getSCMin();
       auto maxSC = fd.getSCMax();
-      for (auto& param: params){
-        for(int i=0u; i<params.size();i++){
-          auto sdNormalized = paramSD[i]/ySD;
-          scMax.push_back(sdNormalized*maxSC[i]);
-          scMin.push_back(sdNormalized*minSC[i]);
-          scMean.push_back(sdNormalized*meanSC[i]);
-        }
+      for(int i=0u; i<params.size();i++){
+        auto sdNormalized = paramSD[i]/ySD;
+        scMax.push_back(sdNormalized*maxSC[i]);
+        scMin.push_back(sdNormalized*minSC[i]);
+        scMean.push_back(sdNormalized*meanSC[i]);
       }
-
+      return 0;
     }
 
     std::vector<double> SDNormalizedLocalSA::getSCMax() {

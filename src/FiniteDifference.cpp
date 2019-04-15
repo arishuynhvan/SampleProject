@@ -16,7 +16,6 @@
 // GNU General Public License for more details.
 
 #include <vector>
-#include <stdexcept>
 #include <cmath>
 #include <cfloat>
 #include "GenericModel.hpp"
@@ -117,11 +116,6 @@ FiniteDifference::~FiniteDifference() = default;
         return scMean;
     }
 
-    /**
-     * getSCMatrix()[i] includes all sensitivity coefficients
-     * calculated over the range of independent variables x
-     * when parameter c[i] is perturbed
-     */
     std::vector<std::vector<double>> FiniteDifference::getSCMatrix(){
         return scMatrix;
     }
@@ -129,11 +123,6 @@ FiniteDifference::~FiniteDifference() = default;
       return doubleEps;
     }
 
-    /** Check if the arguments are valid
-      *
-      * \return  0 -> success; 1 -> d is nan, infinity or <1e-15; 2 -> params contain nan, or 0 values;
-      *          3 -> x contains infinity or nan
-      */
     int FiniteDifference::invalidArguments(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
                     const double d) {
@@ -141,5 +130,17 @@ FiniteDifference::~FiniteDifference() = default;
       for (auto &param:c){if(!std::isnormal(param)){return 2;}}
       for (auto &inputs:x){for(auto &input:inputs){if(std::isinf(input)||std::isnan(input)){return 3;}}}
       return 0;
+    }
+
+    int FiniteDifference::sdNormalize (std::vector<double> paramSD, double ySD){
+      if(!std::isnormal(ySD)){return 2;}
+      for(int i=0u; i<paramSD.size();i++){
+        if(std::isnan(paramSD[i])){return 1;}
+        if(scMean.empty()){return 3;}
+        sdnSC.push_back(paramSD[i]/ySD*scMean[i]);
+      }
+    }
+    std::vector<double> FiniteDifference::getSDNSC(){
+      return sdnSC;
     }
 }

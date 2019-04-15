@@ -68,16 +68,42 @@ class FiniteDifference
     std::vector<double> getSCMax();
     std::vector<double> getSCMin();
     std::vector<double> getSCMean();
+
+    /**
+     * getSCMatrix()[i] includes all sensitivity coefficients
+     * calculated over the range of independent variables x
+     * when parameter c[i] is perturbed
+     */
     std::vector<std::vector<double>> getSCMatrix();
     double getDoubleEps();
+
+    /** Check if the arguments are valid
+      *
+      * \return  0 -> success; 1 -> d is nan, infinity or <1e-15; 2 -> params contain nan, or 0 values;
+      *          3 -> x contains infinity or nan
+      */
     int invalidArguments(const std::vector<double> &c,
                     const std::vector<std::vector<double>> &x,
                     const double d);
+
+    /** This function normalizes sensitivity measure by the standard deviations
+      * of the parameters and outputs
+      *
+      * \param paramSD A vector of standard deviations of all parameters (from data)
+      * \param ySD The standard deviation of outputs (from data)
+      * \return 0 -> success; 1 -> paramSD contains NAN, 2 -> invalid ySD;
+      *         3 -> scMean is empty (i.e. calculateSensitivity() failed)
+      */
+    int sdNormalize (std::vector<double> paramSD, double ySD);
+    std::vector<double> getSDNSC();
+
+
 private:
     std::vector<std::vector<double>> scMatrix;
     std::vector<double> scMax;
     std::vector<double> scMin;
     std::vector<double> scMean;
+    std::vector<double> sdnSC;
     double doubleEps;
 };
 }// namespace SensitivityAnalysis

@@ -120,13 +120,11 @@
 		</Compiler>
 		<Unit filename="include/FiniteDifference.hpp" />
 		<Unit filename="include/GenericSensitivityAnalysis.hpp" />
-		<Unit filename="include/SDNormalizedLocalSA.hpp" />
 		<Unit filename="include/SensitivityAnalysis.hpp">
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/FiniteDifference.cpp" />
-		<Unit filename="src/SDNormalizedLocalSA.cpp" />
 		<Unit filename="src/main.cpp">
 			<Option target="Debug" />
 			<Option target="Release" />
